@@ -1,0 +1,117 @@
+import time
+import random
+
+# Merge Sort
+def mergeSort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        L = arr[:mid]
+        R = arr[mid:]
+
+        mergeSort(L)  # Partitioned L을 정렬
+        mergeSort(R)  # Partitioned R을 정렬
+
+        # 정렬된 L과 R을 병합
+        arr.clear()  # 리스트 내용 비우기
+        while len(L) > 0 and len(R) > 0:
+            if L[0] <= R[0]:
+                arr.append(L[0])
+                L.pop(0)
+            else:
+                arr.append(R[0])
+                R.pop(0)
+
+        for i in L:
+            arr.append(i)
+        for i in R:
+            arr.append(i)
+
+# Quick Sort
+def partition(arr, low, high):
+    i = (low - 1)  # smaller element의 인덱스
+    pivot = arr[high]  # pivot
+
+    for j in range(low, high):
+
+        # 현재 요소가 pivot보다 작으면
+        if arr[j] < pivot:
+
+            # smaller element의 인덱스 증가
+            i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
+
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return (i + 1)
+
+def quickSort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+
+        quickSort(arr, low, pi - 1)
+        quickSort(arr, pi + 1, high)
+
+# Heap Sort
+def heapify(arr, n, i):
+    largest = i  # root를 초기화
+    l = 2 * i + 1
+    r = 2 * i + 2
+
+    if l < n and arr[i] < arr[l]:
+        largest = l
+
+    if r < n and arr[largest] < arr[r]:
+        largest = r
+
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]  # swap
+        heapify(arr, n, largest)
+
+def heapSort(arr):
+    n = len(arr)
+
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+    for i in range(n - 1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]  # swap
+        heapify(arr, i, 0)
+
+# Python 내장 정렬 함수로 시간 측정
+def pythonSort(arr):
+    start = time.time()
+    arr.sort()
+    end = time.time()
+    print("Time taken by Python sort:", end - start)
+
+list1 = [i for i in range(10000)]
+random.shuffle(list1)
+list2 = list1.copy()  # Merge Sort를 위한 복사본
+list3 = list1.copy()  # Quick Sort를 위한 복사본
+list4 = list1.copy()  # Heap Sort를 위한 복사본
+
+print("Original list: 1~10000")
+print("")
+
+print("Time taken by Merge Sort:")
+start = time.time()
+mergeSort(list2)
+end = time.time()
+print(end - start)
+print("")
+
+print("Time taken by Quick Sort:")
+start = time.time()
+quickSort(list3, 0, len(list3) - 1)
+end = time.time()
+print(end - start)
+print("")
+
+print("Time taken by Heap Sort:")
+start = time.time()
+heapSort(list4)
+end = time.time()
+print(end - start)
+print("")
+
+print("Time taken by Python sort:")
+pythonSort(list1)
